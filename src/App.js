@@ -20,7 +20,18 @@ function App() {
     if (name.length === 0) {
       showAlert(true, 'danger', 'Empty item cannot be added!');
     } else if (name.length > 0 && isEditing) {
-      // handle editing
+      setList(
+        list.map((item) => {
+          if (item.id === editId) {
+            return { ...item, title: name };
+          }
+          return item;
+        })
+      );
+      setName('');
+      setEditId(null);
+      setIsEditing(false);
+      showAlert(true, 'success', 'Item successfully updated!');
     } else {
       showAlert(true, 'success', 'Item successfully added!');
 
@@ -34,8 +45,19 @@ function App() {
   };
 
   const clearListHandler = () => {
-    showAlert(true, 'success', 'All the items removed successfully!');
+    showAlert(true, 'danger', 'All the items removed!');
     setList([]);
+  };
+
+  const editItem = (id, title) => {
+    setEditId(id);
+    setIsEditing(true);
+    setName(title);
+  };
+
+  const removeItem = (id) => {
+    showAlert(true, 'danger', 'Item removed');
+    setList(list.filter((item) => item.id !== id));
   };
 
   const showAlert = (show = false, type = '', message = '') => {
@@ -52,6 +74,7 @@ function App() {
           <Alert
             {...alert}
             removeAlert={showAlert}
+            list={list}
           />
         )}
         <h3>Grocery Bud</h3>
@@ -73,7 +96,11 @@ function App() {
       </form>
       {list.length > 0 && (
         <div className='grocery-container'>
-          <List items={list} />
+          <List
+            items={list}
+            editItem={editItem}
+            removeItem={removeItem}
+          />
           <button
             onClick={clearListHandler}
             className='clear-btn'
