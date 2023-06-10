@@ -18,13 +18,12 @@ function App() {
     e.preventDefault();
 
     if (name.length === 0) {
-      // handle alert
-      console.log('here');
-      showAlert(true, 'danger', 'Cannot add an empty item!');
+      showAlert(true, 'danger', 'Empty item cannot be added!');
     } else if (name.length > 0 && isEditing) {
       // handle editing
     } else {
-      // handle alert
+      showAlert(true, 'success', 'Item successfully added!');
+
       const newItem = {
         id: uuidv4(),
         title: name,
@@ -34,8 +33,13 @@ function App() {
     }
   };
 
+  const clearListHandler = () => {
+    showAlert(true, 'success', 'All the items removed successfully!');
+    setList([]);
+  };
+
   const showAlert = (show = false, type = '', message = '') => {
-    setAlert(show, type, message);
+    setAlert({ show, type, message });
   };
 
   return (
@@ -70,7 +74,12 @@ function App() {
       {list.length > 0 && (
         <div className='grocery-container'>
           <List items={list} />
-          <button className='clear-btn'>Clear items</button>
+          <button
+            onClick={clearListHandler}
+            className='clear-btn'
+          >
+            Clear items
+          </button>
         </div>
       )}
     </section>
